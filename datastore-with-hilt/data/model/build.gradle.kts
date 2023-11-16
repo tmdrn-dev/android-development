@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.datastorewithhilt.data.datastore"
+    namespace = "com.example.datastorewithhilt.data.model"
     compileSdk = 34
 
     defaultConfig {
@@ -23,7 +23,6 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("com.google.dagger:hilt-android:2.48.1")
     kapt("com.google.dagger:hilt-android-compiler:2.48.1")
 

@@ -16,3 +16,5 @@ dependencyResolutionManagement {
 rootProject.name = "DatastoreWithHilt"
 include(":app")
 include(":data:datastore")
+include(":data:repository")
+include(":data:model")

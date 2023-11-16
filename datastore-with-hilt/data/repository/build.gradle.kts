@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.datastorewithhilt.data.datastore"
+    namespace = "com.example.datastorewithhilt.data.repository"
     compileSdk = 34
 
     defaultConfig {
@@ -26,6 +26,9 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("com.google.dagger:hilt-android:2.48.1")
     kapt("com.google.dagger:hilt-android-compiler:2.48.1")
+
+    implementation(project(":data:datastore"))
+    implementation(project(":data:model"))
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
