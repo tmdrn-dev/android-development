@@ -19,7 +19,7 @@ class MainActivityViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = UserData("SK","88"),
+            initialValue = UserData("UNKNOWN","UNKNOWN"),
         )
 
     fun setName(name: String) {
