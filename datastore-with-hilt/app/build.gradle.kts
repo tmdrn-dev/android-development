@@ -63,7 +63,7 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     kapt("com.google.dagger:hilt-android-compiler:2.48.1")
 
-    implementation(project(":data:model"))
+    implementation(project(":domain"))
     implementation(project(":data:repository"))
 
     testImplementation("junit:junit:4.13.2")
