@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.datastorewithhilt.ui.theme.DatastoreWithHiltTheme
 
 @Composable
 fun TimerScreen(
@@ -20,7 +18,7 @@ fun TimerScreen(
 
     Scaffold {
         Column(modifier = Modifier.padding(it)) {
-            Text(text = "Time remaining: ${time.value.second} seconds")
+            Text(text = "Time remaining: ${time.value}")
 
             Button(onClick = { viewModel.startTimer(60) }) {
                 Text("Start 60s Timer")
@@ -38,13 +36,5 @@ fun TimerScreen(
                 Text("Stop Timer")
             }
         }
-    }
-}
-
-@Preview
-@Composable
-fun TimerScreenPreview() {
-    DatastoreWithHiltTheme {
-        TimerScreen()
     }
 }

@@ -2,57 +2,55 @@ package com.example.datastorewithhilt
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datastorewithhilt.data.model.TimerData
-import com.example.datastorewithhilt.data.repository.TimerRepository
 import com.example.datastorewithhilt.domain.FormattedTimerUseCase
+import com.example.datastorewithhilt.domain.PauseTimerUseCase
+import com.example.datastorewithhilt.domain.ResumeTimerUseCase
+import com.example.datastorewithhilt.domain.StartTimerUseCase
+import com.example.datastorewithhilt.domain.StopTimerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TimerViewModel @Inject constructor(
-    private val timerRepository: TimerRepository,
-    formattedTimerUseCase: FormattedTimerUseCase
+    private val startTimerUseCase: StartTimerUseCase,
+    private val stopTimerUseCase: StopTimerUseCase,
+    private val pauseTimerUseCase: PauseTimerUseCase,
+    private val resumeTimerUseCase: ResumeTimerUseCase,
+    private val formattedTimerUseCase: FormattedTimerUseCase
 ) : ViewModel() {
-
     // To Do: val timerTime: StateFlow<TimerUiState>
-//    val timerTime = timerRepository.timeFlow
-//        .stateIn(
-//            scope = viewModelScope,
-//            started = SharingStarted.WhileSubscribed(5_000),
-//            initialValue = TimerData(0)
-//    )
-
-    val timerTime: StateFlow<String> = getFormattedTimerUseCase()
+    val timerTime: StateFlow<String> = formattedTimerUseCase()
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.WhileSubscribed(5_000),
             initialValue = "00:00:00"
         )
 
     fun startTimer(time: Int) {
         viewModelScope.launch {
-            timerRepository.start(time)
+            startTimerUseCase(time)
         }
     }
 
     fun stopTimer() {
         viewModelScope.launch {
-            timerRepository.stop()
+            stopTimerUseCase()
         }
     }
 
     fun pauseTimer() {
         viewModelScope.launch {
-            timerRepository.pause()
+            pauseTimerUseCase()
         }
     }
 
     fun resumeTimer() {
         viewModelScope.launch {
-            timerRepository.resume()
+            resumeTimerUseCase()
         }
     }
 }
