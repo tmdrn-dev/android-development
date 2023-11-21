@@ -3,7 +3,6 @@ package com.example.datastorewithhilt
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,12 +17,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             DatastoreWithHiltTheme {
-//                val viewModel: DataStoreViewModel by viewModels()
-//                val viewModel: TimerViewModel by viewModels()
-                
 //                Greeting("Android")
-//                DataStoreScreen(viewModel = viewModel)
                 TimerScreen()
+//                DataStoreScreen()
             }
         }
     }

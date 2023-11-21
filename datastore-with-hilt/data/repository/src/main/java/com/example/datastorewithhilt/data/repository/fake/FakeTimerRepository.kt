@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class TimerRepositoryImpl : TimerRepository {
+class FakeTimerRepository : TimerRepository {
     private val _timeFlow = MutableStateFlow(TimerData(0))
     override val timeFlow = _timeFlow.asStateFlow()
 

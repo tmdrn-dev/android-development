@@ -2,7 +2,7 @@ package com.example.datastorewithhilt
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datastorewithhilt.domain.FormattedTimerUseCase
+import com.example.datastorewithhilt.domain.FormatTimerUseCase
 import com.example.datastorewithhilt.domain.PauseTimerUseCase
 import com.example.datastorewithhilt.domain.ResumeTimerUseCase
 import com.example.datastorewithhilt.domain.StartTimerUseCase
@@ -20,10 +20,10 @@ class TimerViewModel @Inject constructor(
     private val stopTimerUseCase: StopTimerUseCase,
     private val pauseTimerUseCase: PauseTimerUseCase,
     private val resumeTimerUseCase: ResumeTimerUseCase,
-    private val formattedTimerUseCase: FormattedTimerUseCase
+    private val formatTimerUseCase: FormatTimerUseCase
 ) : ViewModel() {
     // To Do: val timerTime: StateFlow<TimerUiState>
-    val timerTime: StateFlow<String> = formattedTimerUseCase()
+    val timerTime: StateFlow<String> = formatTimerUseCase()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),

@@ -7,7 +7,10 @@ interface TimerRepository {
     val timeFlow: Flow<TimerData>
 
     suspend fun start(second: Int)
+
     suspend fun stop()
+
     suspend fun pause()
+
     suspend fun resume()
 }

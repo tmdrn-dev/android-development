@@ -64,6 +64,7 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.48.1")
 
     implementation(project(":domain"))
+    implementation(project(":data:datastore"))
     implementation(project(":data:model"))
     implementation(project(":data:repository"))
 

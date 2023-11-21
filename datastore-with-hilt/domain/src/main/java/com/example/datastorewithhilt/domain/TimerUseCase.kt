@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class FormattedTimerUseCase @Inject constructor (
+class FormatTimerUseCase @Inject constructor(
     private val timerRepository: TimerRepository
 ) {
     operator fun invoke(): Flow<String> {
@@ -24,25 +24,33 @@ class FormattedTimerUseCase @Inject constructor (
     }
 }
 
-class StartTimerUseCase @Inject constructor(private val timerRepository: TimerRepository) {
+class StartTimerUseCase @Inject constructor(
+    private val timerRepository: TimerRepository
+) {
     suspend operator fun invoke(seconds: Int) {
         timerRepository.start(seconds)
     }
 }
 
-class StopTimerUseCase @Inject constructor(private val timerRepository: TimerRepository) {
+class StopTimerUseCase @Inject constructor(
+    private val timerRepository: TimerRepository
+) {
     suspend operator fun invoke() {
         timerRepository.stop()
     }
 }
 
-class PauseTimerUseCase @Inject constructor(private val timerRepository: TimerRepository) {
+class PauseTimerUseCase @Inject constructor(
+    private val timerRepository: TimerRepository
+) {
     suspend operator fun invoke() {
         timerRepository.pause()
     }
 }
 
-class ResumeTimerUseCase @Inject constructor(private val timerRepository: TimerRepository) {
+class ResumeTimerUseCase @Inject constructor(
+    private val timerRepository: TimerRepository
+) {
     suspend operator fun invoke() {
         timerRepository.resume()
     }

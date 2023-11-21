@@ -21,19 +21,19 @@ fun TimerScreen(
             Text(text = "Time remaining: ${time.value}")
 
             Button(onClick = { viewModel.startTimer(60) }) {
-                Text("Start 60s Timer")
+                Text("Start(60s)")
             }
 
             Button(onClick = { viewModel.pauseTimer() }) {
-                Text("Pause Timer")
+                Text("Pause")
             }
 
             Button(onClick = { viewModel.resumeTimer() }) {
-                Text("Resume Timer")
+                Text("Resume")
             }
 
             Button(onClick = { viewModel.stopTimer() }) {
-                Text("Stop Timer")
+                Text("Stop")
             }
         }
     }
