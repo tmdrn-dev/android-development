@@ -18,8 +18,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             DatastoreWithHiltTheme {
 //                Greeting("Android")
-                TimerScreen()
+//                TimerScreen()
 //                DataStoreScreen()
+                FakeScreen()
             }
         }
     }
