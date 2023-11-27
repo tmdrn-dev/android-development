@@ -20,6 +20,7 @@ android {
 
 dependencies {
 
+    implementation(project(":data:datasource"))
     implementation(project(":data:datastore"))
     implementation(project(":data:model"))
 
