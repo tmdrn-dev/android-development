@@ -4,7 +4,7 @@ import com.example.datastorewithhilt.data.model.FakeDataModel
 import kotlinx.coroutines.flow.Flow
 
 interface DataRepository {
-    suspend fun getData(): Flow<FakeDataModel>
+    suspend fun getData(): FakeDataModel
 
-    suspend fun requestData(): Flow<FakeDataModel>
+    fun requestData(): Flow<FakeDataModel>
 }

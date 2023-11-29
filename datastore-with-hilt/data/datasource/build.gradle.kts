@@ -20,6 +20,7 @@ android {
 
 dependencies {
     implementation("com.google.dagger:hilt-android:2.48.1")
+    implementation(project(":data:model"))
     kapt("com.google.dagger:hilt-android-compiler:2.48.1")
 
     implementation("androidx.core:core-ktx:1.12.0")

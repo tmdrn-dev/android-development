@@ -2,14 +2,13 @@ package com.example.datastorewithhilt
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun FakeScreen(
     viewModel: FakeViewModel = hiltViewModel()
 ) {
-    val data = viewModel.data.collectAsState()
-
-    Text(text = data.value?.data.toString())
+    val data = viewModel.data.collectAsStateWithLifecycle()
+    Text(text = data.value.toString())
 }

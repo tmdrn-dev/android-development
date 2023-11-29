@@ -5,10 +5,10 @@ import com.example.datastorewithhilt.data.repository.fake.FakeDataRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class FakeUseCase @Inject constructor(
+class FakeDataUseCase @Inject constructor(
     private val fakeDataRepository: FakeDataRepository
 ) {
-    suspend operator fun invoke(): Flow<FakeDataModel> {
+    operator fun invoke(): Flow<FakeDataModel> {
         return fakeDataRepository.requestData()
     }
 }

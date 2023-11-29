@@ -11,15 +11,11 @@ import javax.inject.Inject
 class FakeDataRepository @Inject constructor(
     private val dataSource: FakeDataSource
 ): DataRepository {
-    override suspend fun getData(): Flow<FakeDataModel> {
-        return flow {
-            emit(FakeDataModel(dataSource.getData()))
-        }
+    override suspend fun getData(): FakeDataModel {
+        return dataSource.getData()
     }
 
-    override suspend fun requestData(): Flow<FakeDataModel> {
-        return dataSource.requestData().map { time ->
-            FakeDataModel(time)
-        }
+    override fun requestData(): Flow<FakeDataModel> {
+        return dataSource.requestData()
     }
 }
