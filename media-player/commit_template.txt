@@ -1,0 +1,21 @@
+#Width of each field must be less than 100 symbols, ends there ------------------------------------|
+
+Prefix: Title(Summary)
+#Prefix can be:
+#ENH    Enhancement, new functionality
+#BUG    Bug fix
+#DOC    Additions/updates to documentation
+#TST    Additions/updates to tests
+#BLD    Updates to the build process/scripts
+#PERF   Performance improvement
+#CLN    Code cleanup
+#Title(Summary) should shortly provide information about this commit
+
+:Detailed Notes:
+#Add detailed notes about your commit
+
+:Testing Performed:
+#Add details about how this commit was tested
+
+:Issues Addressed:
+[MADI-XXXXX] : Title of Jira ticket
