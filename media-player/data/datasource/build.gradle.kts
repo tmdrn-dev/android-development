@@ -9,6 +9,7 @@ android {
 
 dependencies {
     implementation(project(":data:model"))
+    implementation(libs.gson)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.rules)
