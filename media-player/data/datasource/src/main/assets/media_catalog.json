@@ -7,7 +7,7 @@
       "artist": "The Kyoto Connection",
       "genre": "Electronic",
       "source": "intro_the_way_of_waking_up_feat_alan_watts.mp3",
-      "image": "intro_the_way_of_waking_up_feat_alan_watts_art.jpg",
+      "image": "intro_the_way_of_waking_up_feat_alan_watts_art",
       "trackNumber": 1,
       "totalTrackCount": 13,
       "duration": 90
@@ -19,7 +19,7 @@
       "artist": "Media Right Productions",
       "genre": "Jazz & Blues",
       "source": "jazz_in_paris.mp3",
-      "image": "jazz_in_paris_art.jpg",
+      "image": "jazz_in_paris_art",
       "trackNumber": 1,
       "totalTrackCount": 6,
       "duration": 103
@@ -31,7 +31,7 @@
       "artist": "Silent Partner",
       "genre": "Rock",
       "source": "drop_and_roll.mp3",
-      "image": "drop_and_roll_art.jpg",
+      "image": "drop_and_roll_art",
       "trackNumber": 1,
       "totalTrackCount": 7,
       "duration": 121

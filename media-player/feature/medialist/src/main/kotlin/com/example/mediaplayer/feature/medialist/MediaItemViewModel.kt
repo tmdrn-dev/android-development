@@ -29,12 +29,4 @@ class MediaItemViewModel @Inject constructor(
             }
         }
     }
-
-//    val data: StateFlow<MediaData> =
-//        getMusicSourceUseCase()
-//            .stateIn(
-//                scope = viewModelScope,
-//                started = SharingStarted.WhileSubscribed(5_000),
-//                initialValue = MediaData("none"),
-//            )
 }

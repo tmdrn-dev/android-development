@@ -10,6 +10,8 @@ class FeatureConventionPlugin : Plugin<Project> {
                 add("implementation", project(":common:ui"))
                 add("implementation", project(":domain"))
                 add("implementation", project(":data:model"))
+                add("implementation", libs.findLibrary("coil.kt").get())
+                add("implementation", libs.findLibrary("coil.kt.compose").get())
                 add("implementation", libs.findLibrary("androidx.compose.material3").get())
                 add("implementation", libs.findLibrary("androidx.hilt.navigation.compose").get())
                 add("implementation", libs.findLibrary("androidx.lifecycle.runtime.compose").get())
