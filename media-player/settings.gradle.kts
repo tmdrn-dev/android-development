@@ -23,3 +23,5 @@ include(":data:datasource")
 include(":data:model")
 include(":data:repository")
 include(":domain")
+
+include(":common:service")

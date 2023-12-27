@@ -1,4 +1,4 @@
-package com.example.mediaplayer.feature.medialist
+package com.example.mediaplayer.app.medialist
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

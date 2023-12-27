@@ -1,6 +1,6 @@
 package com.example.mediaplayer.app.ui
 
-import com.example.mediaplayer.feature.medialist.MediaListScreen
+import com.example.mediaplayer.app.medialist.MediaListScreen
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -16,7 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun MediaPlayerApp() {
+fun MediaPlayerApp(
+    startService: () -> Unit,
+) {
     Scaffold(
         containerColor = Color.Transparent,
         contentColor = colorScheme.onBackground,
@@ -32,7 +34,7 @@ fun MediaPlayerApp() {
                     ),
                 ),
         ) {
-            MediaListScreen()
+            MediaListScreen(startService)
         }
     }
 }
