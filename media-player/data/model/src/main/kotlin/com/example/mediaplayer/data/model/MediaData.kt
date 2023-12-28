@@ -1,21 +1,20 @@
 package com.example.mediaplayer.data.model
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.RawRes
+import android.net.Uri
 
 data class MediaData(
     val id: String,
     val title: String,
     val album: String,
     val artist: String,
-    val genre: String,
-    @RawRes val source: Int,
-    @DrawableRes val image: Int,
-    val trackNumber: Int,
-    val totalTrackCount: Int,
-    val duration: Int
+//    val genre: String,
+    val source: Uri,
+    val image: Uri,
+//    val trackNumber: Int,
+//    val totalTrackCount: Int,
+//    val duration: Int
 )
 
 data class MediaCatalog(
-    val music: List<MediaData>
+    val mediaList: List<MediaData>
 )
