@@ -24,7 +24,6 @@ class MusicServiceHandler @Inject constructor(
     }
 
     fun addMediaItem(mediaItem: MediaItem) {
-        println("[SK] MusicServiceHandler addMediaItem")
         player.setMediaItem(mediaItem)
         player.prepare()
     }
@@ -34,18 +33,28 @@ class MusicServiceHandler @Inject constructor(
         player.prepare()
     }
 
+    fun seekMediaItem(mediaItemIndex: Int) {
+        if (mediaItemIndex < 0 || mediaItemIndex >= player.mediaItemCount) {
+            // 인덱스가 유효 범위를 벗어났을 경우 처리
+            return
+        }
+        player.seekToDefaultPosition(mediaItemIndex)
+        player.prepare()
+    }
+
+    fun getCurrentMediaItemIndex(): Int {
+        return player.currentMediaItemIndex
+    }
+
     suspend fun onPlayerEvent(playerEvent: PlayerEvent) {
         when (playerEvent) {
             PlayerEvent.Backward -> player.seekBack()
             PlayerEvent.Forward -> player.seekForward()
             PlayerEvent.PlayPause -> {
-                println("[SK] MusicServiceHandler onPlayerEvent")
                 if (player.isPlaying) {
-                    println("[SK] MusicServiceHandler onPlayerEvent:isPlaying -> pause")
                     player.pause()
                     stopProgressUpdate()
                 } else {
-                    println("[SK] MusicServiceHandler onPlayerEvent: play")
                     player.play()
                     _simpleMediaState.value = SimpleMediaState.Playing(isPlaying = true)
                     startProgressUpdate()

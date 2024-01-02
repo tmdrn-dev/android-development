@@ -20,7 +20,7 @@ class MusicService : MediaSessionService() {
 
     override fun onCreate() {
         super.onCreate()
-        println("[SK] MusicService onStartCommand")
+        println("[SK] MusicService onCreate")
     }
 
     @UnstableApi

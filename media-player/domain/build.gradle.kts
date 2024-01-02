@@ -10,6 +10,7 @@ android {
 dependencies {
     implementation(project(":data:model"))
     implementation(project(":data:repository"))
+    implementation("androidx.media3:media3-session:1.2.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.rules)

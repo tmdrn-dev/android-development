@@ -5,7 +5,6 @@ import android.net.Uri
 import com.example.mediaplayer.data.datasource.MediaDataSource
 import com.example.mediaplayer.data.model.JsonArray
 import com.example.mediaplayer.data.model.JsonObject
-import com.example.mediaplayer.data.model.MediaCatalog
 import com.example.mediaplayer.data.model.MediaData
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
@@ -14,45 +13,41 @@ import kotlinx.coroutines.flow.flow
 class MusicDataSource(
     private val context: Context
 ): MediaDataSource {
-    override fun getData(): Flow<MediaCatalog> = flow {
-        val jsonString = context.assets.open("media_catalog.json").bufferedReader().use { it.readText() }
+    override fun getMediaData() = flow {
+        val jsonString = context.assets.open("media_catalog.json")
+            .bufferedReader()
+            .use { it.readText() }
         val jsonArray = Gson().fromJson(jsonString, JsonArray::class.java)
 
-        val mediaData = jsonArray.music.map { jsonObject ->
+        val mediaDataList = jsonArray.music.map { jsonObject ->
             MediaData(
                 id = jsonObject.id,
                 title = jsonObject.title,
                 album = jsonObject.album,
                 artist = jsonObject.artist,
-//                genre = jsonObject.genre,
-                source = Uri.parse(
-                    getResourceUriByName(
+                source = Uri.parse(getResourceUriByName(
                         context,
                         "raw",
                         jsonObject.source
                     )
                 ),
-                image = Uri.parse (
-                    getResourceUriByName(
+                image = Uri.parse(getResourceUriByName(
                         context,
                         "drawable",
                         jsonObject.image
                     )
-                )
-//                trackNumber = jsonObject.trackNumber,
-//                totalTrackCount = jsonObject.totalTrackCount,
-//                duration = jsonObject.duration
+                ),
             )
         }
 
-        emit(MediaCatalog(mediaList = mediaData))
+        emit(mediaDataList)
     }
 }
 
 fun getResourceUriByName (
     context: Context,
-    resourceName: String,
-    resourceType: String
+    resourceType: String,
+    resourceName: String
 ): String {
     val modifiedResourceName = resourceName.split(".")[0]
     val resourceId = context.resources.getIdentifier(
@@ -60,5 +55,6 @@ fun getResourceUriByName (
         resourceType,
         context.packageName
     )
-    return "android.resource://" + context.packageName + "/" + resourceId
+    val result = "android.resource://" + context.packageName + "/" + resourceId
+    return result
 }
