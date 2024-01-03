@@ -1,33 +1,29 @@
 package com.example.mediaplayer.app.medialist
 
-import android.net.Uri
-import com.example.mediaplayer.domain.GetMusicSourceUseCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
-import androidx.media3.common.MediaMetadata.MEDIA_TYPE_FOLDER_ALBUMS
-import com.example.mediaplayer.data.model.MediaData
-import com.example.mediaplayer.data.repository.MediaRepository
-import com.example.mediaplayer.feature.medialist.R
-import com.example.mediaplayer.service.ControllerState
+import com.example.mediaplayer.domain.ControlPlaybackUseCase
+import com.example.mediaplayer.domain.GetMediaItemStateUseCase
+import com.example.mediaplayer.domain.LoadMediaItemsUseCase
+import com.example.mediaplayer.domain.MediaLoadingState
+import com.example.mediaplayer.domain.SeekMediaItemUseCase
 import com.example.mediaplayer.service.MusicController
-import com.example.mediaplayer.service.MusicServiceHandler
 import com.example.mediaplayer.service.PlayerEvent
 import com.example.mediaplayer.service.SimpleMediaState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MediaItemViewModel @Inject constructor(
-//    private val musicServiceHandler: MusicServiceHandler,
-    private val musicServiceHandler:MusicController,
-    private val getMusicSourceUseCase: GetMusicSourceUseCase,
+    private val loadMediaItemsUseCase: LoadMediaItemsUseCase,
+    private val getMediaItemStateUseCase: GetMediaItemStateUseCase,
+    private val seekMediaItemUseCase: SeekMediaItemUseCase,
+    private val controlPlaybackUseCase: ControlPlaybackUseCase,
 ) : ViewModel() {
     private var _mediaItems = MutableStateFlow<List<MediaItem>>(emptyList())
     val mediaItems: StateFlow<List<MediaItem>> = _mediaItems.asStateFlow()
@@ -35,20 +31,20 @@ class MediaItemViewModel @Inject constructor(
     private val _currentItem = MutableStateFlow<MediaItem?>(null)
     val currentItem: StateFlow<MediaItem?> = _currentItem.asStateFlow()
 
-    private val _uiState = MutableStateFlow<UIState>(UIState.Initial)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Initial)
     val uiState = _uiState.asStateFlow()
-
 
     init {
         viewModelScope.launch {
             loadMediaItems()
-            _uiState.value = UIState.Ready
 
-            musicServiceHandler.simpleMediaState.collect { mediaState ->
+            getMediaItemStateUseCase().collect{ mediaState ->
                 when (mediaState) {
 //                    is SimpleMediaState.Buffering -> calculateProgressValues(mediaState.progress)
-//                    SimpleMediaState.Initial -> _uiState.value = UIState.Initial
-                    is SimpleMediaState.Playing -> currentItem(mediaState.isPlaying)
+                    SimpleMediaState.Initial -> _uiState.value = UiState.Initial
+                    is SimpleMediaState.Playing -> updateCurrentMediaItemIndex(
+                        mediaState.currentMediaItemIndex
+                    )
                     else -> {}
 //                    is SimpleMediaState.Progress -> calculateProgressValues(mediaState.progress)
 //                    is SimpleMediaState.Ready -> {
@@ -57,46 +53,65 @@ class MediaItemViewModel @Inject constructor(
                     }
                 }
             }
-
-//            musicServiceHandler.onPlayerEvent(PlayerEvent.PlayPause)
         }
 
     private fun loadMediaItems() {
         viewModelScope.launch {
-            getMusicSourceUseCase().collect{
-                _mediaItems.value = it
-                musicServiceHandler.controllerState.collect { controllerState ->
-                    when (controllerState) {
-                        is ControllerState.Ready -> {musicServiceHandler.addMediaItemList(it)}
-                        else -> {}
+            loadMediaItemsUseCase().collect { mediaLoadingState ->
+                when (mediaLoadingState) {
+                    is MediaLoadingState.Ready -> {
+                        _mediaItems.value = mediaLoadingState.mediaItems
+                        if (_mediaItems.value.isNotEmpty())
+                            _uiState.value = UiState.Ready
+                    }
+                    else -> {
+                        _uiState.value = UiState.Initial
                     }
                 }
             }
         }
     }
 
-    fun selectMusic(mediaItem: MediaItem) {
-        val index = mediaItems.value.indexOf(mediaItem)
-        if (index > -1) {
-            musicServiceHandler.seekMediaItem(index)
-        } else {
-            musicServiceHandler.addMediaItem(mediaItem)
-        }
+    fun seekMediaItem(mediaItem: MediaItem) {
         viewModelScope.launch {
-            musicServiceHandler.onPlayerEvent(PlayerEvent.PlayPause)
+            seekMediaItemUseCase(mediaItem)
+        }
+
+        onUiEvent(UiEvent.PlayPause)
+    }
+
+    fun onUiEvent(uiEvent: UiEvent) {
+        viewModelScope.launch {
+            when (uiEvent) {
+                UiEvent.Backward -> controlPlaybackUseCase(PlayerEvent.Backward)
+                UiEvent.Forward -> controlPlaybackUseCase(PlayerEvent.Forward)
+                UiEvent.PlayPause -> controlPlaybackUseCase(PlayerEvent.PlayPause)
+//                is UIEvent.UpdateProgress -> {
+//                    progress = uiEvent.newProgress
+//                    simpleMediaServiceHandler.onPlayerEvent(
+//                        PlayerEvent.UpdateProgress(
+//                            uiEvent.newProgress
+//                        )
+//                    )
+//                }
+            }
         }
     }
 
-    private fun currentItem(isPlaying: Boolean) {
-        if (isPlaying) {
-            val index = musicServiceHandler.getCurrentMediaItemIndex()
-            _currentItem.value = mediaItems.value[index]
-            println("[SK] currentItem = ${currentItem.value?.mediaMetadata?.title.toString()}")
-        }
+    private fun updateCurrentMediaItemIndex(index: Int) {
+        _currentItem.value = mediaItems.value[index]
+        println("[SK] currentItem = ${currentItem.value?.mediaMetadata?.title.toString()}")
     }
 
-    sealed class UIState {
-        data object Initial : UIState()
-        data object Ready : UIState()
+    sealed class UiState {
+        data object Initial : UiState()
+        data object Ready : UiState()
+    }
+
+    sealed class UiEvent {
+        data object PlayPause : UiEvent()
+        data object Backward : UiEvent()
+        data object Forward : UiEvent()
+//        data class UpdateProgress(val newProgress: Float) : UIEvent()
     }
 }

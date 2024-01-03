@@ -8,7 +8,6 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.session.MediaSession
 import com.example.mediaplayer.service.MusicController
-import com.example.mediaplayer.service.MusicServiceHandler
 import com.example.mediaplayer.service.notification.MusicServiceNotificationManager
 import dagger.Module
 import dagger.Provides
@@ -60,15 +59,6 @@ class MusicServiceModule {
         player: ExoPlayer
     ): MediaSession =
         MediaSession.Builder(context, player).build()
-
-    @Provides
-    @Singleton
-    fun provideServiceHandler(
-        player: ExoPlayer
-    ): MusicServiceHandler =
-        MusicServiceHandler(
-            player = player
-        )
 
     @Provides
     @Singleton

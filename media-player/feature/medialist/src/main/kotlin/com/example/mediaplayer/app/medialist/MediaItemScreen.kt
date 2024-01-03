@@ -1,6 +1,5 @@
 package com.example.mediaplayer.app.medialist
 
-import android.view.View.OnClickListener
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,7 +18,6 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,7 +46,7 @@ fun MediaListScreen (
             .background(MaterialTheme.colorScheme.background)
     ) {
         when (state.value) {
-            is MediaItemViewModel.UIState.Ready -> {
+            is MediaItemViewModel.UiState.Ready -> {
                 LaunchedEffect(true) { // This is only call first time
                     startService()
                 }
@@ -57,15 +55,21 @@ fun MediaListScreen (
                     LazyColumn {
                         items(mediaItems) { item ->
                             MediaItemRow(
-                                item,
+                                mediaItem = item,
                                 isPlaying = currentItem == item,
                                 onClick = {
-                                    viewModel.selectMusic(it)
-                                })
+                                    viewModel.seekMediaItem(it)
+                                }
+                            )
                         }
                     }
 
-                    MiniPlayerBar(currentItem)
+                    MiniPlayerBar(
+                        mediaItem = currentItem,
+                        onClick = {
+                            viewModel.onUiEvent(it)
+                        }
+                    )
                 }
             }
 
@@ -96,6 +100,7 @@ fun MediaItemRow(
 @Composable
 fun MiniPlayerBar(
     mediaItem: MediaItem?,
+    onClick: (MediaItemViewModel.UiEvent) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -104,17 +109,29 @@ fun MiniPlayerBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         // 이전곡 버튼
-        IconButton(onClick = { /* 이전곡 기능 구현 */ }) {
+        IconButton(
+            onClick = {
+                onClick(MediaItemViewModel.UiEvent.Backward)
+            }
+        ) {
             Icon(Icons.Default.ArrowBack, contentDescription = "이전곡")
         }
 
         // 재생/일시 정지 버튼
-        IconButton(onClick = { /* 재생/일시 정지 기능 구현 */ }) {
+        IconButton(
+            onClick = {
+                onClick(MediaItemViewModel.UiEvent.PlayPause)
+            }
+        ) {
             Icon(Icons.Default.PlayArrow, contentDescription = "재생/일시 정지")
         }
 
         // 다음곡 버튼
-        IconButton(onClick = { /* 다음곡 기능 구현 */ }) {
+        IconButton(
+            onClick = {
+                onClick(MediaItemViewModel.UiEvent.Forward)
+            }
+        ) {
             Icon(Icons.Default.ArrowForward, contentDescription = "다음곡")
         }
 

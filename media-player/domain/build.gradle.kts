@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":common:service"))
     implementation(project(":data:model"))
     implementation(project(":data:repository"))
     implementation("androidx.media3:media3-session:1.2.0")
