@@ -8,7 +8,6 @@ import com.example.mediaplayer.domain.GetMediaItemStateUseCase
 import com.example.mediaplayer.domain.LoadMediaItemsUseCase
 import com.example.mediaplayer.domain.MediaLoadingState
 import com.example.mediaplayer.domain.SeekMediaItemUseCase
-import com.example.mediaplayer.service.MusicController
 import com.example.mediaplayer.service.PlayerEvent
 import com.example.mediaplayer.service.SimpleMediaState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,14 +34,13 @@ class MediaItemViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     init {
+        loadMediaItems()
         viewModelScope.launch {
-            loadMediaItems()
-
             getMediaItemStateUseCase().collect{ mediaState ->
                 when (mediaState) {
 //                    is SimpleMediaState.Buffering -> calculateProgressValues(mediaState.progress)
                     SimpleMediaState.Initial -> _uiState.value = UiState.Initial
-                    is SimpleMediaState.Playing -> updateCurrentMediaItemIndex(
+                    is SimpleMediaState.Playing -> updateCurrentMediaItem(
                         mediaState.currentMediaItemIndex
                     )
                     else -> {}
@@ -74,7 +72,7 @@ class MediaItemViewModel @Inject constructor(
 
     fun seekMediaItem(mediaItem: MediaItem) {
         viewModelScope.launch {
-            seekMediaItemUseCase(mediaItem)
+            seekMediaItemUseCase(mediaItem, PlayerEvent.Idle)
         }
 
         onUiEvent(UiEvent.PlayPause)
@@ -83,8 +81,14 @@ class MediaItemViewModel @Inject constructor(
     fun onUiEvent(uiEvent: UiEvent) {
         viewModelScope.launch {
             when (uiEvent) {
-                UiEvent.Backward -> controlPlaybackUseCase(PlayerEvent.Backward)
-                UiEvent.Forward -> controlPlaybackUseCase(PlayerEvent.Forward)
+                UiEvent.Backward -> {
+                    seekMediaItemUseCase(currentItem.value, PlayerEvent.Backward)
+//                    controlPlaybackUseCase(PlayerEvent.Backward)
+                }
+                UiEvent.Forward -> {
+                    seekMediaItemUseCase(currentItem.value, PlayerEvent.Forward)
+//                    controlPlaybackUseCase(PlayerEvent.Forward)
+                }
                 UiEvent.PlayPause -> controlPlaybackUseCase(PlayerEvent.PlayPause)
 //                is UIEvent.UpdateProgress -> {
 //                    progress = uiEvent.newProgress
@@ -98,7 +102,7 @@ class MediaItemViewModel @Inject constructor(
         }
     }
 
-    private fun updateCurrentMediaItemIndex(index: Int) {
+    private fun updateCurrentMediaItem(index: Int) {
         _currentItem.value = mediaItems.value[index]
         println("[SK] currentItem = ${currentItem.value?.mediaMetadata?.title.toString()}")
     }

@@ -24,20 +24,27 @@ import javax.inject.Inject
 class MusicController @Inject constructor(
     @ApplicationContext context: Context,
 ) {
-    private val sessionToken = SessionToken(context, ComponentName(context, MusicService::class.java))
+    private val _controllerState = MutableStateFlow<ControllerState>(
+        ControllerState.Initial
+    )
+    val controllerState = _controllerState.asStateFlow()
+
+    private val _simpleMediaState = MutableStateFlow<SimpleMediaState>(
+        SimpleMediaState.Initial
+    )
+    val simpleMediaState = _simpleMediaState.asStateFlow()
+
+    private val sessionToken = SessionToken(
+        context, ComponentName(context, MusicService::class.java)
+    )
     private var controllerFuture: ListenableFuture<MediaController>
     private lateinit var controller: MediaController
 
     private var job: Job? = null
 
-    private val _controllerState = MutableStateFlow<ControllerState>(ControllerState.Initial)
-    val controllerState = _controllerState.asStateFlow()
-
-    private val _simpleMediaState = MutableStateFlow<SimpleMediaState>(SimpleMediaState.Initial)
-    val simpleMediaState = _simpleMediaState.asStateFlow()
-
     init {
-        controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
+        controllerFuture = MediaController.Builder(context, sessionToken)
+            .buildAsync()
         controllerFuture.addListener(
             {
                 controller = controllerFuture.get()
@@ -84,17 +91,22 @@ class MusicController @Inject constructor(
                     stopProgressUpdate()
                 } else {
                     controller.play()
-                    _simpleMediaState.value = SimpleMediaState.Playing(controller.currentMediaItemIndex)
+                    _simpleMediaState.value = SimpleMediaState.Playing(
+                        controller.currentMediaItemIndex
+                    )
                     startProgressUpdate()
                 }
             }
             PlayerEvent.Stop -> stopProgressUpdate()
-            is PlayerEvent.UpdateProgress -> controller.seekTo((controller.duration * playerEvent.newProgress).toLong())
+            is PlayerEvent.UpdateProgress -> controller.seekTo(
+                (controller.duration * playerEvent.newProgress).toLong()
+            )
+
+            else -> {}
         }
     }
 
     private fun initController() {
-        //controller.playWhenReady = true
         controller.addListener(object : Player.Listener {
 
             @SuppressLint("SwitchIntDef")
@@ -110,7 +122,9 @@ class MusicController @Inject constructor(
             @OptIn(DelicateCoroutinesApi::class)
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 if (isPlaying) {
-                    _simpleMediaState.value = SimpleMediaState.Playing(controller.currentMediaItemIndex)
+                    _simpleMediaState.value = SimpleMediaState.Playing(
+                        controller.currentMediaItemIndex
+                    )
                     GlobalScope.launch(Dispatchers.Main) {
                         startProgressUpdate()
                     }
@@ -124,7 +138,9 @@ class MusicController @Inject constructor(
     private suspend fun startProgressUpdate() = job.run {
         while (true) {
             delay(500)
-            _simpleMediaState.value = SimpleMediaState.Progress(controller.currentPosition)
+            _simpleMediaState.value = SimpleMediaState.Progress(
+                controller.currentPosition
+            )
         }
     }
 
@@ -140,6 +156,7 @@ sealed class ControllerState {
 }
 
 sealed class PlayerEvent {
+    object Idle : PlayerEvent()
     object PlayPause : PlayerEvent()
     object Backward : PlayerEvent()
     object Forward : PlayerEvent()

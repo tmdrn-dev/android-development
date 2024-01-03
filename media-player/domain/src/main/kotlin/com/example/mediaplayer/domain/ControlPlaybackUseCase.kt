@@ -16,18 +16,7 @@ class ControlPlaybackUseCase @Inject constructor(
         when (playerEvent) {
             PlayerEvent.Backward -> mediaController.onPlayerEvent(PlayerEvent.Backward)
             PlayerEvent.Forward -> mediaController.onPlayerEvent(PlayerEvent.Forward)
-            PlayerEvent.PlayPause -> {
-                mediaController.onPlayerEvent(PlayerEvent.PlayPause)
-
-//                if (player.isPlaying) {
-//                    player.pause()
-////                    stopProgressUpdate()
-//                } else {
-//                    player.play()
-//                    _simpleMediaState.value = SimpleMediaState.Playing(isPlaying = true)
-////                    startProgressUpdate()
-//                }
-            }
+            PlayerEvent.PlayPause -> mediaController.onPlayerEvent(PlayerEvent.PlayPause)
 //            PlayerEvent.Stop -> stopProgressUpdate()
 //            is PlayerEvent.UpdateProgress -> player.seekTo((player.duration * playerEvent.newProgress).toLong())
             else -> {}
