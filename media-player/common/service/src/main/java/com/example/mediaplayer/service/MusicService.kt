@@ -20,12 +20,10 @@ class MusicService : MediaSessionService() {
 
     override fun onCreate() {
         super.onCreate()
-        println("[SK] MusicService onCreate")
     }
 
     @UnstableApi
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        println("[SK] MusicService onStartCommand")
         notificationManager.startNotificationService(
             mediaSessionService = this,
             mediaSession = mediaSession
@@ -36,7 +34,6 @@ class MusicService : MediaSessionService() {
 
     override fun onDestroy() {
         super.onDestroy()
-        println("[SK] MusicService onDestroy")
         mediaSession.run {
             release()
             if (player.playbackState != Player.STATE_IDLE) {

@@ -12,8 +12,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,6 +23,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
 import coil.compose.AsyncImage
+import com.example.mediaplayer.service.SimpleMediaState
 
 @Composable
 fun MediaListScreen (
@@ -40,6 +44,8 @@ fun MediaListScreen (
     val currentItem by viewModel.currentItem.collectAsStateWithLifecycle()
     val state = viewModel.uiState.collectAsStateWithLifecycle()
 
+    println("[SK] MediaListScreen: ${currentItem?.mediaMetadata?.title}")
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -47,7 +53,7 @@ fun MediaListScreen (
     ) {
         when (state.value) {
             is MediaItemViewModel.UiState.Ready -> {
-                LaunchedEffect(true) { // This is only call first time
+                LaunchedEffect(true) {
                     startService()
                 }
 
@@ -63,13 +69,6 @@ fun MediaListScreen (
                             )
                         }
                     }
-
-                    MiniPlayerBar(
-                        mediaItem = currentItem,
-                        onClick = {
-                            viewModel.onUiEvent(it)
-                        }
-                    )
                 }
             }
 
@@ -99,43 +98,56 @@ fun MediaItemRow(
 
 @Composable
 fun MiniPlayerBar(
-    mediaItem: MediaItem?,
-    onClick: (MediaItemViewModel.UiEvent) -> Unit,
+    viewModel: MediaItemViewModel = hiltViewModel(),
 ) {
+    val currentItem by viewModel.currentItem.collectAsStateWithLifecycle()
+    val mediaState by viewModel.mediaState.collectAsStateWithLifecycle()
+    val isPlaying = remember { mutableStateOf(false) }
+
+//    println("[SK] mediaState: $mediaState, isPlaying: ${isPlaying.value}")
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // 이전곡 버튼
         IconButton(
-            onClick = {
-                onClick(MediaItemViewModel.UiEvent.Backward)
-            }
+            onClick = { viewModel.onUiEvent(MediaItemViewModel.UiEvent.Backward) }
         ) {
-            Icon(Icons.Default.ArrowBack, contentDescription = "이전곡")
+            Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "이전곡")
         }
 
-        // 재생/일시 정지 버튼
         IconButton(
-            onClick = {
-                onClick(MediaItemViewModel.UiEvent.PlayPause)
-            }
+            onClick = { viewModel.onUiEvent(MediaItemViewModel.UiEvent.PlayPause) }
         ) {
-            Icon(Icons.Default.PlayArrow, contentDescription = "재생/일시 정지")
+            Icon(
+                imageVector = when(mediaState) {
+                    is SimpleMediaState.Playing -> {
+                        isPlaying.value = true
+                        Icons.Default.Close
+                    }
+                    SimpleMediaState.Stop -> {
+                        isPlaying.value = false
+                        Icons.Filled.PlayArrow
+                    }
+                    else -> {
+                        if(isPlaying.value) Icons.Default.Close
+                        else Icons.Filled.PlayArrow
+                    }
+                },
+
+                contentDescription = "재생/일시 정지"
+            )
         }
 
-        // 다음곡 버튼
         IconButton(
-            onClick = {
-                onClick(MediaItemViewModel.UiEvent.Forward)
-            }
+            onClick = { viewModel.onUiEvent(MediaItemViewModel.UiEvent.Forward) }
         ) {
-            Icon(Icons.Default.ArrowForward, contentDescription = "다음곡")
+            Icon(Icons.Default.KeyboardArrowRight, contentDescription = "다음곡")
         }
 
-        MediaItem(mediaItem)
+        MediaItem(currentItem)
     }
 }
 

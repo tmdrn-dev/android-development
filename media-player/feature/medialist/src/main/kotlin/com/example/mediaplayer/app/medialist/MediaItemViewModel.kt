@@ -27,22 +27,27 @@ class MediaItemViewModel @Inject constructor(
     private var _mediaItems = MutableStateFlow<List<MediaItem>>(emptyList())
     val mediaItems: StateFlow<List<MediaItem>> = _mediaItems.asStateFlow()
 
-    private val _currentItem = MutableStateFlow<MediaItem?>(null)
+    private var _currentItem = MutableStateFlow<MediaItem?>(null)
     val currentItem: StateFlow<MediaItem?> = _currentItem.asStateFlow()
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Initial)
     val uiState = _uiState.asStateFlow()
 
+    private val _mediaState = MutableStateFlow<SimpleMediaState>(SimpleMediaState.Initial)
+    val mediaState = _mediaState.asStateFlow()
+
     init {
         loadMediaItems()
         viewModelScope.launch {
             getMediaItemStateUseCase().collect{ mediaState ->
+                _mediaState.value = mediaState
                 when (mediaState) {
 //                    is SimpleMediaState.Buffering -> calculateProgressValues(mediaState.progress)
                     SimpleMediaState.Initial -> _uiState.value = UiState.Initial
-                    is SimpleMediaState.Playing -> updateCurrentMediaItem(
-                        mediaState.currentMediaItemIndex
-                    )
+                    is SimpleMediaState.Playing -> {
+                        updateCurrentMediaItem(mediaState.currentMediaItemIndex)
+                    }
+                    is SimpleMediaState.Ready -> {}
                     else -> {}
 //                    is SimpleMediaState.Progress -> calculateProgressValues(mediaState.progress)
 //                    is SimpleMediaState.Ready -> {
@@ -72,9 +77,8 @@ class MediaItemViewModel @Inject constructor(
 
     fun seekMediaItem(mediaItem: MediaItem) {
         viewModelScope.launch {
-            seekMediaItemUseCase(mediaItem, PlayerEvent.Idle)
+            _currentItem.value = seekMediaItemUseCase(mediaItem, PlayerEvent.Idle)
         }
-
         onUiEvent(UiEvent.PlayPause)
     }
 
@@ -82,22 +86,12 @@ class MediaItemViewModel @Inject constructor(
         viewModelScope.launch {
             when (uiEvent) {
                 UiEvent.Backward -> {
-                    seekMediaItemUseCase(currentItem.value, PlayerEvent.Backward)
-//                    controlPlaybackUseCase(PlayerEvent.Backward)
+                    _currentItem.value = seekMediaItemUseCase(currentItem.value, PlayerEvent.Backward)
                 }
                 UiEvent.Forward -> {
-                    seekMediaItemUseCase(currentItem.value, PlayerEvent.Forward)
-//                    controlPlaybackUseCase(PlayerEvent.Forward)
+                    _currentItem.value = seekMediaItemUseCase(currentItem.value, PlayerEvent.Forward)
                 }
                 UiEvent.PlayPause -> controlPlaybackUseCase(PlayerEvent.PlayPause)
-//                is UIEvent.UpdateProgress -> {
-//                    progress = uiEvent.newProgress
-//                    simpleMediaServiceHandler.onPlayerEvent(
-//                        PlayerEvent.UpdateProgress(
-//                            uiEvent.newProgress
-//                        )
-//                    )
-//                }
             }
         }
     }

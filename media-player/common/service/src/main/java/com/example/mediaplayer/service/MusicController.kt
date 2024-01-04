@@ -52,15 +52,9 @@ class MusicController @Inject constructor(
                 initController()
                 job = Job()
             },
-            // 참고: UI가 아닌 다른 프로세스에서 서비스를 실행하는 경우 MoreExecutors.directExecutor() 대신 ContextCompat.getMainExecutor()를 사용하세요.
+            // https://developer.android.com/guide/topics/media/session/mediacontroller#create-controller
             MoreExecutors.directExecutor()
-            //ContextCompat.getMainExecutor(context)
         )
-    }
-
-    fun addMediaItem(mediaItem: MediaItem) {
-        controller.setMediaItem(mediaItem)
-        controller.prepare()
     }
 
     fun addMediaItemList(mediaItemList: List<MediaItem>) {
@@ -74,11 +68,6 @@ class MusicController @Inject constructor(
         }
         controller.seekToDefaultPosition(mediaItemIndex)
         controller.prepare()
-        println("[SK] controller.prepare()")
-    }
-
-    fun getCurrentMediaItemIndex(): Int {
-        return controller.currentMediaItemIndex
     }
 
     suspend fun onPlayerEvent(playerEvent: PlayerEvent) {

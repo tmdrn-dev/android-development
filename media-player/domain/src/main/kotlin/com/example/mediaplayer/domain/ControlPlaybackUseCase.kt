@@ -13,6 +13,7 @@ class ControlPlaybackUseCase @Inject constructor(
     private val mediaController: MusicController,
 ) {
     suspend operator fun invoke(playerEvent: PlayerEvent) {
+        println("[SK] ControlPlaybackUseCase: $playerEvent")
         when (playerEvent) {
             PlayerEvent.Backward -> mediaController.onPlayerEvent(PlayerEvent.Backward)
             PlayerEvent.Forward -> mediaController.onPlayerEvent(PlayerEvent.Forward)
