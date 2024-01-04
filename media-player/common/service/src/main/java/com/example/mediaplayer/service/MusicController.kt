@@ -77,19 +77,22 @@ class MusicController @Inject constructor(
             PlayerEvent.PlayPause -> {
                 if (controller.isPlaying) {
                     controller.pause()
-                    stopProgressUpdate()
+                    _simpleMediaState.value = SimpleMediaState.Stop
+//                    stopProgressUpdate()
                 } else {
                     controller.play()
                     _simpleMediaState.value = SimpleMediaState.Playing(
                         controller.currentMediaItemIndex
                     )
-                    startProgressUpdate()
+//                    startProgressUpdate()
                 }
             }
-            PlayerEvent.Stop -> stopProgressUpdate()
-            is PlayerEvent.UpdateProgress -> controller.seekTo(
-                (controller.duration * playerEvent.newProgress).toLong()
-            )
+            PlayerEvent.Stop -> {
+//                stopProgressUpdate()
+            }
+//            is PlayerEvent.UpdateProgress -> controller.seekTo(
+//                (controller.duration * playerEvent.newProgress).toLong()
+//            )
 
             else -> {}
         }
@@ -114,11 +117,11 @@ class MusicController @Inject constructor(
                     _simpleMediaState.value = SimpleMediaState.Playing(
                         controller.currentMediaItemIndex
                     )
-                    GlobalScope.launch(Dispatchers.Main) {
-                        startProgressUpdate()
-                    }
+//                    GlobalScope.launch(Dispatchers.Main) {
+//                        startProgressUpdate()
+//                    }
                 } else {
-                    stopProgressUpdate()
+//                    stopProgressUpdate()
                 }
             }
         })

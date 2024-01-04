@@ -98,7 +98,6 @@ class MediaItemViewModel @Inject constructor(
 
     private fun updateCurrentMediaItem(index: Int) {
         _currentItem.value = mediaItems.value[index]
-        println("[SK] currentItem = ${currentItem.value?.mediaMetadata?.title.toString()}")
     }
 
     sealed class UiState {

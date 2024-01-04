@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -43,8 +44,6 @@ fun MediaListScreen (
     val mediaItems by viewModel.mediaItems.collectAsStateWithLifecycle()
     val currentItem by viewModel.currentItem.collectAsStateWithLifecycle()
     val state = viewModel.uiState.collectAsStateWithLifecycle()
-
-    println("[SK] MediaListScreen: ${currentItem?.mediaMetadata?.title}")
 
     Box(
         modifier = Modifier
@@ -104,7 +103,8 @@ fun MiniPlayerBar(
     val mediaState by viewModel.mediaState.collectAsStateWithLifecycle()
     val isPlaying = remember { mutableStateOf(false) }
 
-//    println("[SK] mediaState: $mediaState, isPlaying: ${isPlaying.value}")
+    println("[SK] currentItem: ${currentItem?.mediaMetadata?.title}")
+    println("[SK] mediaState: $mediaState, isPlaying: ${isPlaying.value}")
 
     Row(
         modifier = Modifier
@@ -129,14 +129,13 @@ fun MiniPlayerBar(
                     }
                     SimpleMediaState.Stop -> {
                         isPlaying.value = false
-                        Icons.Filled.PlayArrow
+                        Icons.Default.PlayArrow
                     }
                     else -> {
                         if(isPlaying.value) Icons.Default.Close
-                        else Icons.Filled.PlayArrow
+                        else Icons.Default.PlayArrow
                     }
                 },
-
                 contentDescription = "재생/일시 정지"
             )
         }
@@ -147,7 +146,7 @@ fun MiniPlayerBar(
             Icon(Icons.Default.KeyboardArrowRight, contentDescription = "다음곡")
         }
 
-        MediaItem(currentItem)
+        MediaItem(currentItem, modifier=Modifier.fillMaxWidth())
     }
 }
 
@@ -155,6 +154,7 @@ fun MiniPlayerBar(
 fun MediaItem(
     mediaItem: MediaItem?,
     isPlaying: Boolean = true,
+    modifier: Modifier = Modifier
 ) {
     AsyncImage(
         model = mediaItem?.mediaMetadata?.artworkUri,

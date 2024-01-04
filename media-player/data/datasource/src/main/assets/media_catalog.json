@@ -1,7 +1,7 @@
 {
   "music": [
     {
-      "id": "wake_up",
+      "id": "intro_the_way_of_waking_up_feat_alan_watts",
       "title": "Intro - The Way Of Waking Up (feat. Alan Watts)",
       "album": "Wake Up",
       "artist": "The Kyoto Connection",
@@ -35,6 +35,19 @@
       "trackNumber": 1,
       "totalTrackCount": 7,
       "duration": 121
+    },
+    {
+      "id": "keys_to_the_kingdom",
+      "title": "Keys To The Kingdom",
+      "album": "Youtube Audio Library Rock 2",
+      "artist": "The 126ers",
+      "genre": "Rock",
+      "source": "keys_to_the_kingdom.mp3",
+      "image": "keys_to_the_kingdom_art.jpg",
+      "trackNumber": 1,
+      "totalTrackCount": 2,
+      "duration": 221,
+      "site": "https://www.youtube.com/audiolibrary/music"
     }
   ]
 }
