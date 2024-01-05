@@ -11,7 +11,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":common:service"))
+    implementation(project(":common:controller"))
     implementation(project(":data:model"))
     implementation(project(":data:repository"))
     implementation("androidx.media3:media3-common:1.2.0")

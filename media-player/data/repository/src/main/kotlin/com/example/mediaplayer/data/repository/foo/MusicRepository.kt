@@ -1,14 +1,10 @@
 package com.example.mediaplayer.data.repository.foo
 
-import android.net.Uri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.example.mediaplayer.data.datasource.MediaDataSource
-import com.example.mediaplayer.data.model.MediaData
 import com.example.mediaplayer.data.repository.MediaRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 

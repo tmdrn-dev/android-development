@@ -8,8 +8,8 @@ import com.example.mediaplayer.domain.GetMediaItemStateUseCase
 import com.example.mediaplayer.domain.LoadMediaItemsUseCase
 import com.example.mediaplayer.domain.MediaLoadingState
 import com.example.mediaplayer.domain.SeekMediaItemUseCase
-import com.example.mediaplayer.service.PlayerEvent
-import com.example.mediaplayer.service.SimpleMediaState
+import com.example.mediaplayer.common.controller.PlayerEvent
+import com.example.mediaplayer.common.controller.MediaState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,7 +33,7 @@ class MediaItemViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Initial)
     val uiState = _uiState.asStateFlow()
 
-    private val _mediaState = MutableStateFlow<SimpleMediaState>(SimpleMediaState.Initial)
+    private val _mediaState = MutableStateFlow<MediaState>(MediaState.Initial)
     val mediaState = _mediaState.asStateFlow()
 
     init {
@@ -43,11 +43,11 @@ class MediaItemViewModel @Inject constructor(
                 _mediaState.value = mediaState
                 when (mediaState) {
 //                    is SimpleMediaState.Buffering -> calculateProgressValues(mediaState.progress)
-                    SimpleMediaState.Initial -> _uiState.value = UiState.Initial
-                    is SimpleMediaState.Playing -> {
+                    MediaState.Initial -> _uiState.value = UiState.Initial
+                    is MediaState.Playing -> {
                         updateCurrentMediaItem(mediaState.currentMediaItemIndex)
                     }
-                    is SimpleMediaState.Ready -> {}
+                    is MediaState.Ready -> {}
                     else -> {}
 //                    is SimpleMediaState.Progress -> calculateProgressValues(mediaState.progress)
 //                    is SimpleMediaState.Ready -> {

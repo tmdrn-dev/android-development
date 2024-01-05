@@ -25,3 +25,4 @@ include(":data:repository")
 include(":domain")
 
 include(":common:service")
+include(":common:controller")

@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,7 +33,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
 import coil.compose.AsyncImage
-import com.example.mediaplayer.service.SimpleMediaState
+import com.example.mediaplayer.common.controller.MediaState
 
 @Composable
 fun MediaListScreen (
@@ -123,11 +122,11 @@ fun MiniPlayerBar(
         ) {
             Icon(
                 imageVector = when(mediaState) {
-                    is SimpleMediaState.Playing -> {
+                    is MediaState.Playing -> {
                         isPlaying.value = true
                         Icons.Default.Close
                     }
-                    SimpleMediaState.Stop -> {
+                    MediaState.Stop -> {
                         isPlaying.value = false
                         Icons.Default.PlayArrow
                     }
@@ -146,7 +145,7 @@ fun MiniPlayerBar(
             Icon(Icons.Default.KeyboardArrowRight, contentDescription = "다음곡")
         }
 
-        MediaItem(currentItem, modifier=Modifier.fillMaxWidth())
+        MediaItem(currentItem)
     }
 }
 
@@ -154,7 +153,6 @@ fun MiniPlayerBar(
 fun MediaItem(
     mediaItem: MediaItem?,
     isPlaying: Boolean = true,
-    modifier: Modifier = Modifier
 ) {
     AsyncImage(
         model = mediaItem?.mediaMetadata?.artworkUri,

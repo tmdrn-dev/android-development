@@ -1,18 +1,18 @@
 package com.example.mediaplayer.domain
 
 import androidx.media3.common.MediaItem
-import com.example.mediaplayer.service.MusicController
-import com.example.mediaplayer.service.PlayerEvent
+import com.example.mediaplayer.common.controller.MediaPlayerController
+import com.example.mediaplayer.common.controller.PlayerEvent
 import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 
 class SeekMediaItemUseCase @Inject constructor(
-    private val mediaController: MusicController,
+    private val mediaController: com.example.mediaplayer.common.controller.MediaPlayerController,
     private val loadMediaItemsUseCase: LoadMediaItemsUseCase
 ) {
     suspend operator fun invoke(
         mediaItem: MediaItem?,
-        playerEvent: PlayerEvent
+        playerEvent: com.example.mediaplayer.common.controller.PlayerEvent
     ): MediaItem? {
         val mediaLoadingState = loadMediaItemsUseCase().firstOrNull {
                 it is MediaLoadingState.Ready
@@ -21,13 +21,13 @@ class SeekMediaItemUseCase @Inject constructor(
         mediaLoadingState?.let { state ->
             var index = state.mediaItems.indexOf(mediaItem)
             when (playerEvent) {
-                PlayerEvent.Forward -> {
+                com.example.mediaplayer.common.controller.PlayerEvent.Forward -> {
                     index += 1
                     if (index >= state.mediaItems.size) {
                         index = 0
                     }
                 }
-                PlayerEvent.Backward -> {
+                com.example.mediaplayer.common.controller.PlayerEvent.Backward -> {
                     index -= 1
                     if (index < 0) {
                         index = state.mediaItems.size - 1

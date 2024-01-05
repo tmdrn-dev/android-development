@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.mediaplayer.service.MusicService
+import com.example.mediaplayer.common.service.MediaPlayerService
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
     private fun startService() {
         if (!isServiceRunning) {
-            val intent = Intent(this, MusicService::class.java)
+            val intent = Intent(this, MediaPlayerService::class.java)
             startForegroundService(intent)
             isServiceRunning = true
         }
