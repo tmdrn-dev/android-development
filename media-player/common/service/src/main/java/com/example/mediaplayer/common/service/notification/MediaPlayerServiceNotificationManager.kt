@@ -48,7 +48,6 @@ class MediaPlayerServiceNotificationManager @Inject constructor(
                     pendingIntent = mediaSession.sessionActivity
                 )
             )
-//            .setSmallIconResourceId(R.drawable.ic_microphone)
             .build()
             .also {
                 it.setMediaSessionToken(mediaSession.sessionCompatToken)

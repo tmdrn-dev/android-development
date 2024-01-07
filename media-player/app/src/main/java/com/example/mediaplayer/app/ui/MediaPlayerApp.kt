@@ -20,7 +20,7 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.mediaplayer.app.medialist.MiniPlayerBar
+import com.example.mediaplayer.feature.nowplaying.NowPlayingBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +47,7 @@ fun MediaPlayerApp(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.primary,
             ) {
-                MiniPlayerBar()
+                NowPlayingBar()
             }
         }
     ) { padding ->

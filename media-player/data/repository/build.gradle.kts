@@ -11,7 +11,6 @@ dependencies {
     implementation(project(":data:datasource"))
     implementation(project(":data:model"))
     implementation("androidx.media3:media3-common:1.2.0")
-    implementation("androidx.media3:media3-session:1.2.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

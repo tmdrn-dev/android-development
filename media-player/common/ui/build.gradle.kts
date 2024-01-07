@@ -8,6 +8,9 @@ android {
 }
 
 dependencies {
+    implementation("androidx.media3:media3-common:1.2.0")
+    implementation(libs.coil.kt.compose)
+
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.runtime)

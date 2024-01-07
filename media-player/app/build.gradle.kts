@@ -38,6 +38,8 @@ dependencies {
     implementation(project(":common:ui"))
     implementation(project(":common:service"))
     implementation(project(":feature:medialist"))
+    implementation(project(":feature:nowplaying"))
+
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui)

@@ -10,13 +10,13 @@ import javax.inject.Inject
 
 class LoadMediaItemsUseCase @Inject constructor(
     private val mediaRepository: MusicRepository,
-    private val mediaController: com.example.mediaplayer.common.controller.MediaPlayerController,
+    private val mediaController: MediaPlayerController,
 ) {
     suspend operator fun invoke(): Flow<MediaLoadingState> = flow {
         mediaRepository.mediaItemList.collect { mediaItemList ->
             mediaController.controllerState.collect { controllerState ->
                 when (controllerState) {
-                    is com.example.mediaplayer.common.controller.ControllerState.Ready -> {
+                    is ControllerState.Ready -> {
                         mediaController.addMediaItemList(mediaItemList)
                         emit(MediaLoadingState.Ready(mediaItemList))
                     }

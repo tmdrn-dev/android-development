@@ -22,15 +22,14 @@ import javax.inject.Inject
 class MediaPlayerController @Inject constructor(
     @ApplicationContext context: Context,
 ) {
-    private val _controllerState = MutableStateFlow<ControllerState>(
-        ControllerState.Initial
-    )
+    private val _controllerState = MutableStateFlow<ControllerState>(ControllerState.Initial)
     val controllerState = _controllerState.asStateFlow()
 
-    private val _mediaState = MutableStateFlow<MediaState>(
-        MediaState.Initial
-    )
+    private val _mediaState = MutableStateFlow<MediaState>(MediaState.Initial)
     val mediaState = _mediaState.asStateFlow()
+
+    private val _preparedMediaItem = MutableStateFlow<MediaItem?>(null)
+    val preparedMediaItem = _preparedMediaItem.asStateFlow()
 
     private val sessionToken = SessionToken(
         context, ComponentName(context, MediaPlayerService::class.java)
@@ -58,14 +57,16 @@ class MediaPlayerController @Inject constructor(
     fun addMediaItemList(mediaItemList: List<MediaItem>) {
         controller.setMediaItems(mediaItemList)
         controller.prepare()
+        _preparedMediaItem.value = controller.getMediaItemAt(0)
     }
 
-    fun seekMediaItem(mediaItemIndex: Int) {
-        if (mediaItemIndex < 0 || mediaItemIndex >= controller.mediaItemCount) {
+    fun seekMediaItem(index: Int) {
+        if (index < 0 || index >= controller.mediaItemCount) {
             return
         }
-        controller.seekToDefaultPosition(mediaItemIndex)
+        controller.seekToDefaultPosition(index)
         controller.prepare()
+        _preparedMediaItem.value = controller.getMediaItemAt(index)
     }
 
     suspend fun onPlayerEvent(playerEvent: PlayerEvent) {
@@ -73,58 +74,49 @@ class MediaPlayerController @Inject constructor(
             PlayerEvent.Backward -> controller.seekBack()
             PlayerEvent.Forward -> controller.seekForward()
             PlayerEvent.PlayPause -> {
-                if (controller.isPlaying) {
-                    controller.pause()
-                    _mediaState.value = MediaState.Stop
-//                    stopProgressUpdate()
-                } else {
-                    controller.play()
-                    _mediaState.value = MediaState.Playing(
-                        controller.currentMediaItemIndex
-                    )
-//                    startProgressUpdate()
+                when(controller.isPlaying) {
+                    true -> {
+                        controller.pause()
+                        _mediaState.value = MediaState.Playing(false)
+                    }
+                    false -> {
+                        controller.play()
+                        _mediaState.value = MediaState.Playing(true)
+                        _preparedMediaItem.value = controller.currentMediaItem
+                    }
                 }
             }
             PlayerEvent.Stop -> {
                 controller.stop()
-                _mediaState.value = MediaState.Stop
-//                stopProgressUpdate()
+                _mediaState.value = MediaState.Playing(false)
             }
-//            is PlayerEvent.UpdateProgress -> controller.seekTo(
-//                (controller.duration * playerEvent.newProgress).toLong()
-//            )
-
             else -> {}
         }
     }
 
     private fun initController() {
-        controller.addListener(object : Player.Listener {
+        controller.addListener(
+            object : Player.Listener {
+                @SuppressLint("SwitchIntDef")
+                override fun onPlaybackStateChanged(playbackState: Int) {
+                    when (playbackState) {
+                        ExoPlayer.STATE_BUFFERING -> _mediaState.value =
+                            MediaState.Buffering(controller.currentPosition)
+                        ExoPlayer.STATE_READY -> _mediaState.value =
+                            MediaState.Ready(controller.duration)
+                    }
+                }
 
-            @SuppressLint("SwitchIntDef")
-            override fun onPlaybackStateChanged(playbackState: Int) {
-                when (playbackState) {
-                    ExoPlayer.STATE_BUFFERING -> _mediaState.value =
-                        MediaState.Buffering(controller.currentPosition)
-                    ExoPlayer.STATE_READY -> _mediaState.value =
-                        MediaState.Ready(controller.duration)
+                override fun onIsPlayingChanged(isPlaying: Boolean) {
+                    if (isPlaying) {
+                        _mediaState.value = MediaState.Playing(true)
+                        _preparedMediaItem.value = controller.currentMediaItem
+                    } else {
+                        _mediaState.value = MediaState.Playing(false)
+                    }
                 }
             }
-
-            @OptIn(DelicateCoroutinesApi::class)
-            override fun onIsPlayingChanged(isPlaying: Boolean) {
-                if (isPlaying) {
-                    _mediaState.value = MediaState.Playing(
-                        controller.currentMediaItemIndex
-                    )
-//                    GlobalScope.launch(Dispatchers.Main) {
-//                        startProgressUpdate()
-//                    }
-                } else {
-//                    stopProgressUpdate()
-                }
-            }
-        })
+        )
     }
 
     private suspend fun startProgressUpdate() = job.run {
@@ -138,7 +130,7 @@ class MediaPlayerController @Inject constructor(
 
     private fun stopProgressUpdate() {
         job?.cancel()
-        _mediaState.value = MediaState.Stop
+        _mediaState.value = MediaState.Playing(false)
     }
 }
 
@@ -161,9 +153,5 @@ sealed interface MediaState {
     data class Ready(val duration: Long) : MediaState
     data class Progress(val progress: Long) : MediaState
     data class Buffering(val progress: Long) : MediaState
-    data class Playing(
-        val currentMediaItemIndex: Int
-    ) : MediaState
-
-    data object Stop : MediaState
+    data class Playing(val isPlaying: Boolean): MediaState
 }

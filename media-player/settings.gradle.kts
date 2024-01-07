@@ -26,3 +26,4 @@ include(":domain")
 
 include(":common:service")
 include(":common:controller")
+include(":feature:nowplaying")

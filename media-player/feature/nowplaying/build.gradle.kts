@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.mediaplayer.feature.medialist"
+    namespace = "com.example.mediaplayer.feature.nowplaying"
 }
 
 dependencies {
